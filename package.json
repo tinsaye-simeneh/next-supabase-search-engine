@@ -6,8 +6,20 @@
     "start": "next start"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/server": "^11.11.0",
+    "@mantine/core": "^6.0.10",
+    "@mantine/hooks": "^6.0.10",
+    "@mantine/next": "^6.0.10",
+    "@mantine/spotlight": "^6.0.10",
+    "@tabler/icons": "^2.17.0",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.1.2",
+    "@types/react": "18.2.6",
+    "typescript": "5.0.4"
   }
 }
