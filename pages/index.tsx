@@ -10,8 +10,8 @@ export default function Demo() {
   const handleSearch = async () => {
     const { data, error } = await supabase
       .from("customerData")
-      .select("*")
-      .textSearch("name", search);
+      .select("name")
+      .ilike("name", `%${search}%`);
     if (error) console.log("error", error);
     else console.log("data", data);
   };
@@ -36,9 +36,6 @@ export default function Demo() {
       >
         Search
       </Button>
-      <Link href="/create">
-        <Button fullWidth>Create Post</Button>
-      </Link>
     </Container>
   );
 }
