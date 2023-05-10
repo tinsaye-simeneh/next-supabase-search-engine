@@ -1,58 +1,44 @@
-import { Button, Container, Group, Input } from "@mantine/core";
+import { Button, Container, Text, Input } from "@mantine/core";
 import supabase from "../utilities/supabaseClient";
 import { IconSearch } from "@tabler/icons-react";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { useState } from "react";
 
-const search = (query: string) => {
-  return supabase
-    .from("pages")
-    .select("*")
-    .filter("title", "ilike", `%${query}%`)
-    .order("title", { ascending: true });
-};
-
-const handleSearch = () => {
-  const router = useRouter();
-  <Input
-    icon={<IconSearch />}
-    placeholder="Search"
-    onChange={(event) => {
-      const query = event.currentTarget.value;
-      search(query).then((response) => {
-        const results = response.data;
-        if (results.length > 0) {
-          <Group position="center">
-            {results.map((result) => (
-              <Button
-                key={result.id}
-                onClick={() => {
-                  router.push(`/pages/${result.id}`);
-                }}
-              >
-                {result.title}
-              </Button>
-            ))}
-          </Group>;
-        } else {
-          <Group position="center">
-            <Button>No results</Button>
-          </Group>;
-        }
-      });
-    }}
-  />;
-};
-
 export default function Demo() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [search, setSearch] = useState("");
+
+  const handleSearch = async () => {
+    const { data, error } = await supabase
+      .from("customerData")
+      .select("*")
+      .textSearch("name", search);
+    if (error) console.log("error", error);
+    else console.log("data", data);
+  };
 
   return (
     <Container size="xs">
-      <Input icon={<IconSearch />} placeholder="Search" />
-      <Button onClick={handleSearch} mt="lg">
-        search
+      <Text size="lg" align="center" style={{ marginBottom: 15 }}>
+        Search for a post
+      </Text>
+      <Input
+        placeholder="Search"
+        icon={<IconSearch />}
+        value={search}
+        onChange={(e) => setSearch(e.currentTarget.value)}
+        style={{ marginBottom: 15 }}
+      />
+      <Button
+        fullWidth
+        variant="outline"
+        onClick={handleSearch}
+        style={{ marginBottom: 15 }}
+      >
+        Search
       </Button>
+      <Link href="/create">
+        <Button fullWidth>Create Post</Button>
+      </Link>
     </Container>
   );
 }
