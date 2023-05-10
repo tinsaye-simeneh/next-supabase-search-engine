@@ -1,52 +1,58 @@
-import { Button, Group } from "@mantine/core";
-import { SpotlightProvider, spotlight } from "@mantine/spotlight";
-import type { SpotlightAction } from "@mantine/spotlight";
-import {
-  IconHome,
-  IconDashboard,
-  IconFileText,
-  IconSearch,
-} from "@tabler/icons-react";
+import { Button, Container, Group, Input } from "@mantine/core";
+import supabase from "../utilities/supabaseClient";
+import { IconSearch } from "@tabler/icons-react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
-function SpotlightControl() {
+const search = (query: string) => {
+  return supabase
+    .from("pages")
+    .select("*")
+    .filter("title", "ilike", `%${query}%`)
+    .order("title", { ascending: true });
+};
+
+const handleSearch = () => {
+  const router = useRouter();
+  <Input
+    icon={<IconSearch />}
+    placeholder="Search"
+    onChange={(event) => {
+      const query = event.currentTarget.value;
+      search(query).then((response) => {
+        const results = response.data;
+        if (results.length > 0) {
+          <Group position="center">
+            {results.map((result) => (
+              <Button
+                key={result.id}
+                onClick={() => {
+                  router.push(`/pages/${result.id}`);
+                }}
+              >
+                {result.title}
+              </Button>
+            ))}
+          </Group>;
+        } else {
+          <Group position="center">
+            <Button>No results</Button>
+          </Group>;
+        }
+      });
+    }}
+  />;
+};
+
+export default function Demo() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <Group position="center">
-      <Button onClick={spotlight.open}>Open spotlight</Button>
-    </Group>
-  );
-}
-
-const actions: SpotlightAction[] = [
-  {
-    title: "Home",
-    description: "Get to home page",
-    onTrigger: () => console.log("Home"),
-    icon: <IconHome size="1.2rem" />,
-  },
-  {
-    title: "Dashboard",
-    description: "Get full information about current system status",
-    onTrigger: () => console.log("Dashboard"),
-    icon: <IconDashboard size="1.2rem" />,
-  },
-  {
-    title: "Documentation",
-    description: "Visit documentation to lean more about all features",
-    onTrigger: () => console.log("Documentation"),
-    icon: <IconFileText size="1.2rem" />,
-  },
-];
-
-function Demo() {
-  return (
-    <SpotlightProvider
-      actions={actions}
-      searchIcon={<IconSearch size="1.2rem" />}
-      searchPlaceholder="Search..."
-      shortcut="mod + shift + 1"
-      nothingFoundMessage="Nothing found..."
-    >
-      <SpotlightControl />
-    </SpotlightProvider>
+    <Container size="xs">
+      <Input icon={<IconSearch />} placeholder="Search" />
+      <Button onClick={handleSearch} mt="lg">
+        search
+      </Button>
+    </Container>
   );
 }
