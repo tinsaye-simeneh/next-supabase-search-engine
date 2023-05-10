@@ -14,12 +14,18 @@ export default function Demo() {
       .select("name")
       .ilike("name", `%${search}%`);
     if (error) {
-      console.log("error", error);
+      console.log(error);
     } else {
       setData(data);
-      console.log("data", data);
     }
   };
+
+  if (search === "") {
+    data.length = 0;
+  }
+  if (search.length > 0) {
+    handleSearch();
+  }
 
   return (
     <Container size="xs">
