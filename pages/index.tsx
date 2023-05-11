@@ -41,14 +41,6 @@ export default function Demo() {
         onKeyDown={(e) => e.key === "Escape" && setSearch("")}
         style={{ marginBottom: 15 }}
       />
-      <Button
-        fullWidth
-        variant="outline"
-        onClick={handleSearch}
-        style={{ marginBottom: 15 }}
-      >
-        Search
-      </Button>
       setSearch is: {<pre>{JSON.stringify(search, null, 2)}</pre>}
       <br />
       data:{" "}
